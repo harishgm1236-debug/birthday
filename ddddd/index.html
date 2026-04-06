@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Shashank ✦</title>
+
+  <!-- Fonts -->
+  <link href__="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #050505;
+      --champagne: #E5D1B0;
+      --silver:    #A1A1AA;
+      --indigo:    #6366F1;
+      --border:    rgba(229,209,176,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--champagne);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(229,209,176,0.25); border-radius: 3px; }
+
+    /* ============================================================
+       TYPOGRAPHY
+    ============================================================ */
+    .serif      { font-family: 'Cormorant Garamond', serif; }
+    .outlined   {
+      -webkit-text-stroke: 1.5px rgba(229,209,176,0.12);
+      color: transparent;
+    }
+
+    /* ============================================================
+       CUSTOM CURSOR
+    ============================================================ */
+    #cursor {
+      position: fixed;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--champagne);
+      pointer-events: none;
+      mix-blend-mode: difference;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s;
+    }
+    #cursor.clicking { transform: translate(-50%,-50%) scale(0.4); }
+
+    /* ============================================================
+       FILM GRAIN OVERLAY
+    ============================================================ */
+    #grain {
+      position: fixed; inset: 0; z-index: 200;
+      pointer-events: none; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+      animation: grain 8s steps(10) infinite;
+    }
+    @keyframes grain {
+      0%,100%{transform:translate(0,0)}
+      10%{transform:translate(-5%,-10%)}
+      20%{transform:translate(-15%,5%)}
+      30%{transform:translate(7%,-25%)}
+      40%{transform:translate(-5%,25%)}
+      50%{transform:translate(-15%,10%)}
+      60%{transform:translate(15%,0%)}
+      70%{transform:translate(0%,15%)}
+      80%{transform:translate(3%,35%)}
+      90%{transform:translate(-10%,10%)}
+    }
+
+    /* ============================================================
+       LIGHT LEAK (mouse-tracked)
+    ============================================================ */
+    #lightleak {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      overflow: hidden;
+    }
+    #lightleak .orb1, #lightleak .orb2 {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      transition: left 2s ease-out, top 2s ease-out;
+    }
+    #lightleak .orb1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(229,209,176,0.08), transparent 70%);
+    }
+    #lightleak .orb2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(99,102,241,0.05), transparent 70%);
+    }
+
+    /* ============================================================
+       STARFIELD
+    ============================================================ */
+    #starfield {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+
+    /* ============================================================
+       LOADING SCREEN
+    ============================================================ */
+    #loader {
+      position: fixed; inset: 0; z-index: 1000;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.8s ease;
+    }
+    #loader .icon {
+      font-size: 4rem;
+      animation: float 1.5s ease-in-out infinite;
+      margin-bottom: 1.5rem;
+    }
+    #loader h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem; font-style: italic;
+      color: var(--champagne);
+      letter-spacing: 0.3em;
+      opacity: 0;
+      animation: fadeup 0.6s 0.3s forwards;
+    }
+    #loader .bar-wrap {
+      margin-top: 2rem; width: 200px; height: 1px;
+      background: rgba(229,209,176,0.15);
+      overflow: hidden;
+    }
+    #loader .bar-fill {
+      height: 100%; width: 0;
+      background: var(--champagne);
+      animation: fillbar 2s ease forwards;
+    }
+    @keyframes fillbar { to { width: 100%; } }
+
+    /* ============================================================
+       MUSIC CONTROLLER
+    ============================================================ */
+    #music-btn {
+      position: fixed; top: 1.5rem; left: 1.5rem; z-index: 100;
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1.25rem; border-radius: 2rem;
+      border: 1px solid var(--border);
+      background: rgba(5,5,5,0.6);
+      backdrop-filter: blur(20px);
+      color: var(--champagne);
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; letter-spacing: 0.1em;
+      transition: border-color 0.3s;
+    }
+    #music-btn:hover { border-color: rgba(229,209,176,0.3); }
+    .bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+    .bars span {
+      display: block; width: 3px; border-radius: 2px;
+      background: var(--champagne);
+    }
+    .bars span:nth-child(1) { animation: bar1 0.6s ease-in-out infinite alternate; }
+    .bars span:nth-child(2) { animation: bar1 0.6s 0.15s ease-in-out infinite alternate; }
+    .bars span:nth-child(3) { animation: bar1 0.6s 0.3s ease-in-out infinite alternate; }
+    @keyframes bar1 { from { height: 4px; } to { height: 14px; } }
+
+    /* ============================================================
+       NAV LINE (right side)
+    ============================================================ */
+    #nav-line {
+      position: fixed; right: 1.5rem; top: 50%;
+      transform: translateY(-50%); z-index: 100;
+      width: 1px; height: 80px;
+      background: rgba(229,209,176,0.15);
+      cursor: pointer; overflow: hidden;
+    }
+    #nav-line .scan {
+      width: 100%; height: 40%;
+      background: var(--champagne);
+      box-shadow: 0 0 8px var(--champagne);
+      animation: scan 3s ease-in-out infinite;
+    }
+    @keyframes scan {
+      0%   { transform: translateY(-100%); }
+      50%  { transform: translateY(250%); }
+      100% { transform: translateY(-100%); }
+    }
+    @media (max-width: 768px) { #nav-line { display: none; } }
+
+    /* Fullscreen Nav Overlay */
+    #nav-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(5,5,5,0.97);
+      backdrop-filter: blur(30px);
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2rem;
+    }
+    #nav-overlay.open { display: flex; }
+    #nav-overlay .close-nav {
+      position: absolute; top: 2rem; right: 2rem;
+      background: none; border: none;
+      color: var(--silver); font-size: 2rem; cursor: pointer;
+    }
+    #nav-overlay a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-style: italic; font-weight: 700;
+      color: rgba(229,209,176,0.25);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    #nav-overlay a:hover { color: var(--champagne); }
+
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; padding: 1rem;
+    }
+    #hero-name-bg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; user-select: none;
+      transition: transform 0.3s ease-out;
+    }
+    #hero-name-bg h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(10vw, 14vw, 18vw);
+      font-weight: 700; font-style: italic;
+      -webkit-text-stroke: 1.5px rgba(229,209,176,0.1);
+      color: transparent; white-space: nowrap;
+      letter-spacing: -0.02em;
+    }
+    #hero-img-wrap {
+      position: relative; z-index: 10;
+      width: 280px; height: 380px;
+      border-radius: 1.5rem; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+      transition: transform 0.3s ease-out;
+      animation: fadeInScale 1.2s 0.5s both;
+    }
+    @media (min-width: 768px) {
+      #hero-img-wrap { width: 340px; height: 460px; }
+    }
+    #hero-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    #hero-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, var(--bg), transparent 50%);
+    }
+    #hero-text {
+      position: absolute; bottom: 10%; left: 0; right: 0;
+      z-index: 20; text-align: center; padding: 0 1rem;
+    }
+    #hero-text .eyebrow {
+      font-size: 0.75rem; font-weight: 300;
+      letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--silver); margin-bottom: 0.75rem;
+      animation: fadeup 0.8s 1s both;
+    }
+    #hero-text h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-style: italic; font-weight: 700;
+      color: var(--champagne); line-height: 1;
+      animation: fadeup 0.8s 1.2s both;
+    }
+    #hero-text p {
+      margin-top: 1rem; color: var(--silver);
+      font-size: 1rem; font-weight: 300;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+      animation: fadeup 0.8s 1.6s both;
+    }
+    #scroll-indicator {
+      margin-top: 2.5rem;
+      animation: fadeup 0.8s 2s both;
+    }
+    #scroll-indicator .line {
+      width: 1px; height: 64px; margin: 0 auto;
+      background: rgba(229,209,176,0.15);
+      position: relative; overflow: hidden;
+    }
+    #scroll-indicator .line::after {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 50%;
+      background: var(--champagne);
+      box-shadow: 0 0 8px var(--champagne);
+      animation: scanline 2s ease-in-out infinite;
+    }
+    @keyframes scanline {
+      0%   { top: -50%; opacity: 1; }
+      100% { top: 150%; opacity: 0; }
+    }
+
+    /* ============================================================
+       TIMELINE SECTION
+    ============================================================ */
+    #story {
+      position: relative;
+      padding: 6rem 6vw;
+    }
+    .section-eyebrow {
+      font-size: 0.7rem; font-weight: 400;
+      letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--silver); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-style: italic; font-weight: 700;
+      color: var(--champagne); line-height: 1.1;
+    }
+    .section-header { text-align: center; margin-bottom: 5rem; }
+
+    #timeline-wrap {
+      position: relative; max-width: 700px;
+      margin: 0 auto;
+    }
+    #timeline-beam {
+      position: absolute; left: 1.5rem; top: 0; bottom: 0;
+      width: 1px; background: rgba(229,209,176,0.1);
+    }
+    #timeline-beam .fill {
+      width: 100%; height: 0%;
+      background: linear-gradient(to bottom, var(--champagne), var(--champagne));
+      box-shadow: 0 0 15px rgba(229,209,176,0.4);
+      transition: height 0.1s linear;
+    }
+
+    .tl-item {
+      display: flex; gap: 2rem; align-items: flex-start;
+      padding-bottom: 5rem;
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .tl-item.visible { opacity: 1; transform: translateY(0); }
+
+    .tl-node {
+      flex-shrink: 0;
+      width: 3rem; height: 3rem;
+      border-radius: 50%;
+      border: 1px solid rgba(229,209,176,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--champagne);
+      background: var(--bg); position: relative;
+      transition: box-shadow 0.6s ease;
+    }
+    .tl-item.visible .tl-node {
+      box-shadow: 0 0 25px rgba(229,209,176,0.25);
+    }
+    .tl-node::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(229,209,176,0.15);
+      animation: ripple 2.5s ease-in-out infinite;
+    }
+    @keyframes ripple {
+      0%,100% { transform: scale(1); opacity: 0.5; }
+      50%      { transform: scale(1.6); opacity: 0; }
+    }
+
+    .tl-content .era {
+      font-size: 0.65rem; letter-spacing: 0.35em;
+      text-transform: uppercase; color: var(--silver);
+      margin-bottom: 0.5rem;
+    }
+    .tl-content h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-style: italic; font-weight: 700;
+      color: var(--champagne); margin-bottom: 0.75rem;
+    }
+    .tl-content p {
+      color: var(--silver); font-size: 1rem;
+      line-height: 1.7; max-width: 450px;
+    }
+
+    /* ============================================================
+       GALLERY SECTION
+    ============================================================ */
+    #gallery { padding: 6rem 0; }
+    .gallery-scroll {
+      display: flex; gap: 1.5rem;
+      overflow-x: auto; padding: 0 6vw 2rem;
+      scrollbar-width: none;
+    }
+    .gallery-scroll::-webkit-scrollbar { display: none; }
+
+    .gallery-card {
+      flex-shrink: 0;
+      border-radius: 1rem; overflow: hidden;
+      position: relative; cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .gallery-card:hover { transform: translateY(-8px); }
+
+    .gallery-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+    .gallery-card:hover img { transform: scale(1.08); }
+
+    .gallery-card .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0.1) 50%, transparent 100%);
+    }
+    .gallery-card .label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.5rem;
+    }
+    .gallery-card .label .num {
+      font-size: 0.65rem; letter-spacing: 0.35em;
+      text-transform: uppercase; color: rgba(229,209,176,0.6);
+      margin-bottom: 0.35rem;
+    }
+    .gallery-card .label h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem; font-style: italic;
+      font-weight: 700; color: var(--champagne);
+    }
+    .gallery-card .label p {
+      font-size: 0.85rem; color: var(--silver);
+      margin-top: 0.35rem;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .gallery-card:hover .label p {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* Card sizes */
+    .gc-0 { width: clamp(280px, 50vw, 600px); height: clamp(320px, 60vh, 560px); }
+    .gc-1 { width: clamp(240px, 35vw, 380px); height: clamp(280px, 50vh, 440px); }
+    .gc-2 { width: clamp(260px, 45vw, 520px); height: clamp(300px, 55vh, 500px); }
+    .gc-3 { width: clamp(220px, 30vw, 340px); height: clamp(260px, 45vh, 400px); }
+    .gc-4 { width: clamp(260px, 40vw, 460px); height: clamp(290px, 52vh, 480px); }
+    .gc-5 { width: clamp(260px, 42vw, 480px); height: clamp(300px, 55vh, 500px); }
+
+    /* ============================================================
+       WISH / PARTICLE SECTION
+    ============================================================ */
+    #wish {
+      padding: 6rem 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    #wish-canvas {
+      cursor: pointer;
+      max-width: 100%;
+    }
+    #wish-ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 1px solid rgba(229,209,176,0.25);
+      display: flex; align-items: center; justify-content: center;
+      animation: pulseRing 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    #wish-ring span {
+      font-size: 0.7rem; letter-spacing: 0.15em;
+      color: var(--champagne);
+    }
+    @keyframes pulseRing {
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
+      50%      { transform: translate(-50%,-50%) scale(1.12); opacity: 0.85; }
+    }
+    #wish-canvas-wrap { position: relative; display: inline-block; }
+
+    #wish-result {
+      margin-top: 3rem; display: none;
+      animation: fadeup 1s forwards;
+    }
+    #wish-result h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-style: italic; font-weight: 700;
+      color: var(--champagne);
+    }
+    #wish-result p {
+      margin-top: 0.75rem; color: var(--silver); font-size: 1.1rem;
+    }
+
+    /* ============================================================
+       SURPRISE BUTTON & OVERLAY
+    ============================================================ */
+    #surprise-btn {
+      position: fixed; bottom: 2rem; right: 2rem;
+      z-index: 100; width: 3.5rem; height: 3.5rem;
+      border-radius: 50%; border: none;
+      background: var(--indigo); color: #fff;
+      font-size: 1.25rem; cursor: pointer;
+      box-shadow: 0 0 30px rgba(99,102,241,0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #surprise-btn:hover {
+      transform: scale(1.18);
+      box-shadow: 0 0 50px rgba(99,102,241,0.7);
+    }
+
+    #surprise-overlay {
+      position: fixed; inset: 0; z-index: 400;
+      background: rgba(5,5,5,0.95);
+      backdrop-filter: blur(30px);
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+    }
+    #surprise-overlay.open { display: flex; }
+    .surprise-eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.4em;
+      text-transform: uppercase; color: var(--silver);
+      margin-bottom: 1.5rem;
+    }
+    #surprise-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-style: italic; font-weight: 700;
+      color: var(--champagne); margin-bottom: 1.5rem;
+    }
+    #surprise-msg {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--silver); font-weight: 300;
+      max-width: 520px; line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+    .btn-outline {
+      padding: 0.75rem 2.5rem;
+      border-radius: 2rem;
+      border: 1px solid rgba(229,209,176,0.25);
+      background: transparent; color: var(--champagne);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem; letter-spacing: 0.2em;
+      cursor: pointer; transition: background 0.3s;
+    }
+    .btn-outline:hover { background: rgba(229,209,176,0.08); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      padding: 8rem 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    footer::before {
+      content: '';
+      display: block;
+      width: 6rem; height: 1px;
+      background: rgba(229,209,176,0.15);
+      margin: 0 auto 4rem;
+    }
+    #sig-svg { color: var(--champagne); }
+    #sig-text {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+    #sig-fill { opacity: 0; }
+
+    .footer-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-style: italic;
+      color: rgba(229,209,176,0.5);
+      margin-top: 1.5rem; margin-bottom: 0.75rem;
+    }
+    .footer-credit {
+      font-size: 0.8rem; color: var(--silver);
+      letter-spacing: 0.15em;
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fadeup {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-16px); }
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+
+<body>
+
+<!-- ===================== CURSOR ===================== -->
+<div id="cursor"></div>
+
+<!-- ===================== FILM GRAIN ===================== -->
+<div id="grain"></div>
+
+<!-- ===================== LIGHT LEAK ===================== -->
+<div id="lightleak">
+  <div class="orb1"></div>
+  <div class="orb2"></div>
+</div>
+
+<!-- ===================== STARFIELD ===================== -->
+<canvas id="starfield"></canvas>
+
+<!-- ===================== LOADER ===================== -->
+<div id="loader">
+  <div class="icon">✦</div>
+  <h2>Preparing something special...</h2>
+  <div class="bar-wrap"><div class="bar-fill"></div></div>
+</div>
+
+<!-- ===================== MUSIC ===================== -->
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3" type="audio/mpeg" />
+</audio>
+<div id="music-btn" onclick="toggleMusic()">
+  <div id="music-icon">
+    <span style="font-size:0.85rem">▶</span>
+  </div>
+  <span id="music-text">Music</span>
+</div>
+
+<!-- ===================== NAV LINE ===================== -->
+<div id="nav-line" onclick="openNav()">
+  <div class="scan"></div>
+</div>
+
+<!-- ===================== NAV OVERLAY ===================== -->
+<div id="nav-overlay">
+  <button class="close-nav" onclick="closeNav()">✕</button>
+  <a href__="#hero" onclick="closeNav()">Overture</a>
+  <a href__="#story" onclick="closeNav()">Chronicle</a>
+  <a href__="#gallery" onclick="closeNav()">Archive</a>
+  <a href__="#wish" onclick="closeNav()">Ritual</a>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero">
+  <div id="hero-name-bg"><h1>SHASHANK</h1></div>
+
+  <div id="hero-img-wrap">
+    <img
+      src="photos/Snapchat-42143992.jpg.jpeg"
+      alt="Shashank — the birthday star"
+    />
+  </div>
+
+  <div id="hero-text">
+    <p class="eyebrow">A Celebration of</p>
+    <h2>Happy Birthday</h2>
+    <p>Welcome to your personal universe. Scroll to uncover the story of someone truly extraordinary.</p>
+    <div id="scroll-indicator"><div class="line"></div></div>
+  </div>
+</section>
+
+<!-- ===================== STORY TIMELINE ===================== -->
+<section id="story">
+  <div class="section-header reveal">
+    <p class="section-eyebrow">The Chronicle</p>
+    <h2 class="section-title">The Story of Shashank</h2>
+  </div>
+
+  <div id="timeline-wrap">
+    <div id="timeline-beam"><div id="beam-fill" class="fill"></div></div>
+
+    <div class="tl-item" data-delay="0">
+      <div class="tl-node">✦</div>
+      <div class="tl-content">
+        <p class="era">The Genesis</p>
+        <h3>A Star is Born</h3>
+        <p>The world became a brighter, funnier, and genuinely better place the day Shashank arrived. A legend was officially in the making.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-delay="100">
+      <div class="tl-node">∞</div>
+      <div class="tl-content">
+        <p class="era">The Foundation</p>
+        <h3>The Friendship Era</h3>
+        <p>Through school, hangouts, and endless memories, Shashank proved to be the kind of friend everyone wishes they had. Always present, always genuine.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-delay="200">
+      <div class="tl-node">◆</div>
+      <div class="tl-content">
+        <p class="era">The Ascent</p>
+        <h3>Building the Dream</h3>
+        <p>Every challenge met with grace, every setback turned into a comeback story. The world started to take notice of something remarkable unfolding.</p>
+      </div>
+    </div>
+
+    <div class="tl-item" data-delay="300">
+      <div class="tl-node">❖</div>
+      <div class="tl-content">
+        <p class="era">The Present</p>
+        <h3>The Icon Today</h3>
+        <p>Commanding respect, radiating warmth, and still being the absolute coolest person in every room. This chapter is just the beginning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GALLERY ===================== -->
+<section id="gallery">
+  <div class="section-header reveal" style="padding:0 6vw">
+    <p class="section-eyebrow">The Archive</p>
+    <h2 class="section-title">Golden Memories</h2>
+  </div>
+
+  <div class="gallery-scroll">
+    <div class="gallery-card gc-0">
+      <img src="photos/Snapchat-1352384928.jpg.jpeg" />
+      <div class="overlay"></div>
+      <div class="label">
+        <p class="num">Memory 01</p>
+        <h3>The Spark</h3>
+        <p>Where every celebration begins — the spark that lights up everything.</p>
+      </div>
+    </div>
+
+    <div class="gallery-card gc-1">
+      <img src="photos/Snapchat-1784496755.jpg.jpeg" />
+      <div class="overlay"></div>
+      <div class="label">
+        <p class="num">Memory 02</p>
+        <h3>Golden Hour</h3>
+        <p>That perfect moment when the light hits just right, and so does life.</p>
+      </div>
+    </div>
+
+    <div class="gallery-card gc-2">
+      <img src="photos/Snapchat-285808420.jpg.jpeg" />
+      <div class="overlay"></div>
+      <div class="label">
+        <p class="num">Memory 03</p>
+        <h3>The Squad</h3>
+        <p>Unforgettable nights, unstoppable energy. Through thick and thin.</p>
+      </div>
+    </div>
+
+    <div class="gallery-card gc-3">
+      <img src="photos/Snapchat-174563726.jpg.jpeg" alt="The Details" />
+      <div class="overlay"></div>
+      <div class="label">
+        <p class="num">Memory 04</p>
+        <h3>The Details</h3>
+        <p>It's always the little things that tell the biggest stories.</p>
+      </div>
+    </div>
+
+    <div class="gallery-card gc-4">
+      <img src="photos/Snapchat-240847176.jpg.jpeg" />
+      <div class="overlay"></div>
+      <div class="label">
+        <p class="num">Memory 05</p>
+        <h3>The Setting</h3>
+        <p>Every great memory has a stage — and yours is always spectacular.</p>
+      </div>
+    </div>
+
+    <div class="gallery-card gc-5">
+      <img src="photos/Snapchat-1656186749.jpg.jpeg" />
+      <div class="overlay"></div>
+      <div class="label">
+        <p class="num">Memory 06</p>
+        <h3>The Horizon</h3>
+        <p>Looking forward to all the adventures yet to come.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WISH ===================== -->
+<section id="wish">
+  <div class="reveal" style="margin-bottom:3rem">
+    <p class="section-eyebrow" style="text-align:center">The Ritual</p>
+    <h2 class="section-title" style="text-align:center">Make a Wish</h2>
+    <p id="wish-hint" style="color:var(--silver);margin-top:1rem;font-size:1rem">
+      Gather the light. Then click to release your wish into the universe.
+    </p>
+  </div>
+
+  <div id="wish-canvas-wrap">
+    <canvas id="wish-canvas" width="500" height="400" onclick="igniteWish()"></canvas>
+    <div id="wish-ring"><span>WISH</span></div>
+  </div>
+
+  <div id="wish-result">
+    <h3>Wishes Do Come True</h3>
+    <p>The universe heard you, Shashank. Happy Birthday. ✦</p>
+  </div>
+</section>
+
+<!-- ===================== SURPRISE BTN ===================== -->
+<button id="surprise-btn" onclick="openSurprise()">✦</button>
+
+<!-- ===================== SURPRISE OVERLAY ===================== -->
+<div id="surprise-overlay" onclick="closeSurprise()">
+  <p class="surprise-eyebrow">A Surprise For You</p>
+  <h2 id="surprise-title"></h2>
+  <p id="surprise-msg"></p>
+  <button class="btn-outline" onclick="closeSurprise()" >I feel special ✦</button>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <svg id="sig-svg" width="320" height="80" viewBox="0 0 320 80">
+    <text id="sig-text"
+      x="10" y="55"
+      font-family="'Cormorant Garamond', serif"
+      font-size="48" font-weight="700" font-style="italic"
+      fill="none" stroke="currentColor" stroke-width="0.8"
+      stroke-dasharray="1000" stroke-dashoffset="1000"
+    >Shashank</text>
+    <text id="sig-fill"
+      x="10" y="55"
+      font-family="'Cormorant Garamond', serif"
+      font-size="48" font-weight="700" font-style="italic"
+      fill="currentColor"
+    >Shashank</text>
+  </svg>
+  <p class="footer-tagline">The best is yet to come.</p>
+  <p class="footer-credit">Made with ♡ — A Celestial Legacy Archive</p>
+</footer>
+
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+// ============================================================
+//  LOADER
+// ============================================================
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    loader.style.pointerEvents = 'none';
+    setTimeout(() => loader.remove(), 800);
+
+    // Entrance confetti
+    confetti({ particleCount: 160, spread: 130, origin: { y: 0.3 },
+      colors: ['#E5D1B0','#6366F1','#ffffff','#F59E0B'] });
+  }, 2400);
+});
+
+// ============================================================
+//  CURSOR
+// ============================================================
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+document.addEventListener('mouseup',   () => cursor.classList.remove('clicking'));
+
+// ============================================================
+//  LIGHT LEAK
+// ============================================================
+const orb1 = document.querySelector('#lightleak .orb1');
+const orb2 = document.querySelector('#lightleak .orb2');
+document.addEventListener('mousemove', e => {
+  orb1.style.left = (e.clientX - 300) + 'px';
+  orb1.style.top  = (e.clientY - 300) + 'px';
+  orb2.style.left = (window.innerWidth  - e.clientX - 200) + 'px';
+  orb2.style.top  = (window.innerHeight - e.clientY - 200) + 'px';
+});
+
+// Click sparkle
+document.addEventListener('click', e => {
+  if (e.target.closest('#music-btn') || e.target.closest('#surprise-btn') ||
+      e.target.closest('#surprise-overlay') || e.target.closest('#wish-canvas') ||
+      e.target.closest('#nav-line') || e.target.closest('#nav-overlay')) return;
+  confetti({
+    particleCount: 18, spread: 45,
+    origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+    colors: ['#E5D1B0','#6366F1','#F59E0B'],
+    disableForReducedMotion: true,
+  });
+});
+
+// ============================================================
+//  STARFIELD
+// ============================================================
+(function () {
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [], animId;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initStars();
+  }
+  function initStars() {
+    stars = [];
+    const n = Math.floor(canvas.width * canvas.height / 5000);
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.2 + 0.2,
+        speed: Math.random() * 0.25 + 0.05,
+        pulse: Math.random() * Math.PI * 2,
+        opacity: Math.random() * 0.5 + 0.2,
+      });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.pulse += 0.01;
+      s.y -= s.speed;
+      if (s.y < -5) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
+      const a = s.opacity * (0.6 + 0.4 * Math.sin(s.pulse));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(229,209,176,${a})`;
+      ctx.fill();
+    });
+    animId = requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize);
+  resize(); draw();
+})();
+
+// ============================================================
+//  HERO PARALLAX
+// ============================================================
+const heroNameBg = document.getElementById('hero-name-bg');
+const heroImgWrap = document.getElementById('hero-img-wrap');
+document.addEventListener('mousemove', e => {
+  const mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+  const my = (e.clientY / window.innerHeight - 0.5) * 2;
+  heroNameBg.style.transform = `translate(${mx * -18}px, ${my * -12}px)`;
+  heroImgWrap.style.transform = `translate(${mx * 8}px, ${my * 5}px)`;
+});
+
+// ============================================================
+//  MUSIC
+// ============================================================
+const bgMusic   = document.getElementById('bgMusic');
+const musicIcon = document.getElementById('music-icon');
+const musicText = document.getElementById('music-text');
+let isPlaying = false;
+
+function toggleMusic() {
+  if (isPlaying) {
+    bgMusic.pause();
+    musicIcon.innerHTML = '<span style="font-size:0.85rem">▶</span>';
+    musicText.textContent = 'Music';
+  } else {
+    bgMusic.play().catch(() => {});
+    musicIcon.innerHTML = '<div class="bars"><span></span><span></span><span></span></div>';
+    musicText.textContent = 'Playing';
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.9, x: 0.06 },
+      colors: ['#E5D1B0','#6366F1'] });
+  }
+  isPlaying = !isPlaying;
+}
+
+// ============================================================
+//  NAV
+// ============================================================
+function openNav()  { document.getElementById('nav-overlay').classList.add('open'); }
+function closeNav() { document.getElementById('nav-overlay').classList.remove('open'); }
+
+// ============================================================
+//  SCROLL REVEALS + TIMELINE BEAM
+// ============================================================
+const revealEls  = document.querySelectorAll('.reveal');
+const tlItems    = document.querySelectorAll('.tl-item');
+const tlWrap     = document.getElementById('timeline-wrap');
+const beamFill   = document.getElementById('beam-fill');
+const sigText    = document.getElementById('sig-text');
+const sigFill    = document.getElementById('sig-fill');
+let sigAnimated  = false;
+
+function onScroll() {
+  const vh = window.innerHeight;
+
+  // Generic reveals
+  revealEls.forEach(el => {
+    if (el.getBoundingClientRect().top < vh - 80) el.classList.add('visible');
+  });
+
+  // Timeline items
+  tlItems.forEach(el => {
+    if (el.getBoundingClientRect().top < vh - 60) el.classList.add('visible');
+  });
+
+  // Timeline beam fill
+  if (tlWrap) {
+    const rect  = tlWrap.getBoundingClientRect();
+    const total = tlWrap.offsetHeight;
+    const progress = Math.max(0, Math.min(1, -rect.top / (total - vh)));
+    beamFill.style.height = (progress * 100) + '%';
+  }
+
+  // Signature
+  const footer = document.querySelector('footer');
+  if (footer && !sigAnimated) {
+    if (footer.getBoundingClientRect().top < vh - 100) {
+      sigAnimated = true;
+      sigText.style.transition = 'stroke-dashoffset 3s ease';
+      sigText.style.strokeDashoffset = '0';
+      setTimeout(() => {
+        sigFill.style.transition = 'opacity 1s ease';
+        sigFill.style.opacity = '1';
+      }, 2500);
+    }
+  }
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+
+// ============================================================
+//  WISH / PARTICLE NEBULA
+// ============================================================
+(function () {
+  const canvas = document.getElementById('wish-canvas');
+  const ctx    = canvas.getContext('2d');
+  const ring   = document.getElementById('wish-ring');
+  const W = 500, H = 400;
+  canvas.width = W; canvas.height = H;
+
+  let particles = [], mouse = { x: -999, y: -999 }, ignited = false, animId;
+
+  for (let i = 0; i < 90; i++) {
+    particles.push({
+      x: Math.random() * W, y: Math.random() * H,
+      bx: Math.random() * W, by: Math.random() * H,
+      r: Math.random() * 3 + 0.8,
+      speed: Math.random() * 0.5 + 0.2,
+      angle: Math.random() * Math.PI * 2,
+      color: Math.random() > 0.3 ? '229,209,176' : '99,102,241',
+    });
+  }
+
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = (e.clientX - rect.left) * (W / rect.width);
+    mouse.y = (e.clientY - rect.top)  * (H / rect.height);
+  });
+  canvas.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.angle += p.speed * 0.02;
+      const fx = Math.sin(p.angle) * 28;
+      const fy = Math.cos(p.angle * 0.7) * 18;
+      const dx = mouse.x - p.x, dy = mouse.y - p.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 160 && !ignited) {
+        p.x += dx * 0.04; p.y += dy * 0.04;
+      } else {
+        p.x += (p.bx + fx - p.x) * 0.02;
+        p.y += (p.by + fy - p.y) * 0.02;
+      }
+      const pulse = 0.5 + 0.5 * Math.sin(p.angle * 2);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (0.8 + pulse * 0.4), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${0.3 + pulse * 0.5})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${0.04 + pulse * 0.04})`;
+      ctx.fill();
+    });
+    animId = requestAnimationFrame(draw);
+  }
+  draw();
+
+  window.igniteWish = function () {
+    if (ignited) return;
+    ignited = true;
+    canvas.style.transition = 'opacity 1s ease';
+    canvas.style.opacity = '0.15';
+    ring.style.display = 'none';
+    document.getElementById('wish-hint').style.display = 'none';
+    document.getElementById('wish-result').style.display = 'block';
+
+    const colors = ['#E5D1B0','#6366F1','#ffffff','#F59E0B'];
+    const end = Date.now() + 4000;
+    confetti({ particleCount: 220, spread: 170, origin: { y: 0.5 }, colors });
+    (function frame() {
+      confetti({ particleCount: 4, angle: 60,  spread: 80, origin: { x: 0,   y: 0.6 }, colors });
+      confetti({ particleCount: 4, angle: 120, spread: 80, origin: { x: 1,   y: 0.6 }, colors });
+      confetti({ particleCount: 3, angle: 90,  spread: 120,origin: { x: 0.5, y: 0.8 }, colors });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  };
+})();
+
+// ============================================================
+//  SURPRISE
+// ============================================================
+const surprises = [
+  { t: 'Truth Time',      m: "You're genuinely one of the most extraordinary people to walk this earth. Never change." },
+  { t: 'A Fact',          m: "People who have Shashank in their life are statistically 100% more fulfilled. Science." },
+  { t: 'A Promise',       m: "The drinks are on me next time. Screenshot this as proof. 😏" },
+  { t: 'Vibe Check',      m: "Your energy, your humour, your spirit — absolutely unmatched. Keep shining, legend." },
+  { t: 'A Reminder',      m: "You're doing incredible things. The world is lucky to have you. Keep going, King." },
+];
+
+function openSurprise() {
+  const s = surprises[Math.floor(Math.random() * surprises.length)];
+  document.getElementById('surprise-title').textContent = s.t;
+  document.getElementById('surprise-msg').textContent   = s.m;
+  document.getElementById('surprise-overlay').classList.add('open');
+  confetti({ particleCount: 130, spread: 90, origin: { y: 0.5 },
+    colors: ['#E5D1B0','#6366F1','#fff'] });
+}
+function closeSurprise(e) {
+  if (e && e.target !== document.getElementById('surprise-overlay') &&
+      !e.target.classList.contains('btn-outline')) return;
+  document.getElementById('surprise-overlay').classList.remove('open');
+}
+document.getElementById('surprise-overlay').addEventListener('click', closeSurprise);
+</script>
+
+</body>
+</html>
